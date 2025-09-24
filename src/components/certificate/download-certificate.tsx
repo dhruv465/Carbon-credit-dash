@@ -4,11 +4,18 @@ import type { Credit } from "@/lib/types";
 import { withRetry, AppError, handleError } from "@/lib/error-handling";
 
 /**
- * Downloads a certificate as PDF using html2pdf
+ * Downloads a certificate as PDF - simplified approach
  */
 export const downloadCertificateAsPDF = async (credit: Credit): Promise<void> => {
   try {
     console.log('Starting PDF download for credit:', credit.unic_id);
+    
+    // Check if html2pdf is available
+    if (typeof html2pdf === 'undefined') {
+      console.warn('html2pdf not available, falling back to HTML download');
+      await downloadCertificateAsHTML(credit);
+      return;
+    }
     
     // Generate HTML content for PDF conversion
     const htmlContent = generateCertificateHTML(credit);
@@ -19,17 +26,21 @@ export const downloadCertificateAsPDF = async (credit: Credit): Promise<void> =>
     element.style.position = 'absolute';
     element.style.left = '-9999px';
     element.style.top = '-9999px';
+    element.style.width = '800px';
     document.body.appendChild(element);
     
     // Configure html2pdf options
     const options = {
-      margin: 0.5,
+      margin: [0.5, 0.5, 0.5, 0.5],
       filename: `certificate-${credit.unic_id}-${Date.now()}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: 'jpeg', quality: 0.95 },
       html2canvas: { 
-        scale: 2,
+        scale: 1.5,
         useCORS: true,
-        letterRendering: true
+        allowTaint: true,
+        letterRendering: true,
+        width: 800,
+        height: 600
       },
       jsPDF: { 
         unit: 'in', 
@@ -39,12 +50,18 @@ export const downloadCertificateAsPDF = async (credit: Credit): Promise<void> =>
     };
     
     // Generate and download PDF
-    await html2pdf().set(options).from(element).save();
-    
-    // Cleanup
-    document.body.removeChild(element);
-    
-    console.log('PDF download completed successfully');
+    try {
+      await html2pdf().set(options).from(element).save();
+      console.log('PDF download completed successfully');
+    } catch (pdfError) {
+      console.error('PDF generation failed:', pdfError);
+      throw pdfError;
+    } finally {
+      // Cleanup
+      if (document.body.contains(element)) {
+        document.body.removeChild(element);
+      }
+    }
     
   } catch (error) {
     console.error('PDF download error:', error);

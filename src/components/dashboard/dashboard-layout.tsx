@@ -37,8 +37,9 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
       <Button
         variant="ghost"
         size="sm"
-        className="fixed top-4 left-4 z-50 md:hidden cursor-pointer"
+        className="fixed top-3 left-3 z-50 md:hidden cursor-pointer h-10 w-10 p-0 bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle mobile menu"
       >
         <Menu className="h-5 w-5" />
       </Button>
@@ -51,13 +52,13 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
       )}>
         <div className="flex h-full flex-col">
           {/* Sidebar Header */}
-          <div className="flex h-16 items-center justify-between px-4 border-b border-border/50">
+          <div className="flex h-14 sm:h-16 items-center justify-between px-4 border-b border-border/50">
             <div className="flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                <Leaf className="h-5 w-5 text-primary" />
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                <Leaf className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
               {!sidebarCollapsed && (
-                <span className="text-lg font-bold transition-opacity duration-200">EcoOffset</span>
+                <span className="text-base sm:text-lg font-bold transition-opacity duration-200">EcoOffset</span>
               )}
             </div>
             <Button
@@ -140,25 +141,26 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 
       {/* Top Header Bar */}
       <header className={cn(
-        "fixed top-0 right-0 z-40 h-16 border-b border-border/20 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300 ease-in-out",
-        sidebarCollapsed ? "left-16" : "left-64"
+        "fixed top-0 right-0 z-40 h-14 sm:h-16 border-b border-border/20 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300 ease-in-out",
+        "left-0 md:left-16",
+        sidebarCollapsed ? "md:left-16" : "md:left-64"
       )}>
-        <div className="flex h-full items-center justify-between px-6">
+        <div className="flex h-full items-center justify-between px-4 sm:px-6">
           {/* Page Title */}
           <div className="hidden md:block">
-            <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+            <h1 className="text-lg sm:text-xl font-semibold text-foreground">Dashboard</h1>
           </div>
           
           {/* Mobile Logo */}
-          <div className="flex items-center space-x-2 md:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
-              <Leaf className="h-5 w-5 text-primary" />
+          <div className="flex items-center space-x-2 md:hidden ml-12">
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
+              <Leaf className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             </div>
-            <span className="text-lg font-bold tracking-tight">EcoOffset</span>
+            <span className="text-base sm:text-lg font-bold tracking-tight">EcoOffset</span>
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <ThemeToggle />
           </div>
         </div>
@@ -174,10 +176,10 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 
       {/* Main Content */}
       <main className={cn(
-        "transition-all duration-300 ease-in-out pt-16",
+        "transition-all duration-300 ease-in-out pt-14 sm:pt-16",
         sidebarCollapsed ? "md:ml-16" : "md:ml-64"
       )}>
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8 space-y-8">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 space-y-6 sm:space-y-8">
           {children}
         </div>
       </main>

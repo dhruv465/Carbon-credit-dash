@@ -44,16 +44,19 @@ export function CreditDetailsDialog({ credit, isOpen, onClose }: CreditDetailsDi
         className="max-w-2xl max-h-[90vh] overflow-y-auto"
         aria-describedby="credit-details-description"
       >
-        <DialogHeader className="space-y-3 pr-8">
-          <div className="flex flex-col gap-3">
-            <div className="flex items-start justify-between gap-4">
-              <DialogTitle className="text-xl font-semibold leading-tight text-left flex-1 pr-4">
-                {credit.project_name}
-              </DialogTitle>
+        <DialogHeader className="space-y-4 pr-12">
+          <div className="space-y-3">
+            <DialogTitle className="text-xl font-semibold leading-tight text-left pr-8">
+              {credit.project_name}
+            </DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogDescription id="credit-details-description" className="text-sm text-muted-foreground flex-1">
+                Detailed information about this carbon credit including UNIC ID {credit.unic_id}, vintage {credit.vintage}, and current status
+              </DialogDescription>
               <Badge 
                 variant={isActive ? "default" : "secondary"}
                 className={cn(
-                  "shrink-0 font-medium text-xs px-3 py-1 ml-auto",
+                  "shrink-0 font-medium text-xs px-3 py-1 ml-4",
                   isActive 
                     ? "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800" 
                     : "bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800/50 dark:text-gray-400 dark:border-gray-700"
@@ -63,9 +66,6 @@ export function CreditDetailsDialog({ credit, isOpen, onClose }: CreditDetailsDi
                 {credit.status}
               </Badge>
             </div>
-            <DialogDescription id="credit-details-description" className="text-sm text-muted-foreground">
-              Detailed information about this carbon credit including UNIC ID {credit.unic_id}, vintage {credit.vintage}, and current status
-            </DialogDescription>
           </div>
         </DialogHeader>
 
