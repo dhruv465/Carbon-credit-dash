@@ -280,11 +280,7 @@ function App() {
           
           <Toaster />
           
-          {/* Performance monitoring in development */}
-          <PerformanceMonitor 
-            componentName="App" 
-            enabled={process.env.NODE_ENV === 'development'}
-          />
+
         </div>
       </EnhancedErrorBoundary>
     </ThemeProvider>
