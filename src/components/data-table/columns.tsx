@@ -3,8 +3,8 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Credit } from "@/lib/types";
-import { CreditStatusBadge } from "@/components/credit-status-badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +32,21 @@ export const columns = (setSelectedCredit: (credit: Credit) => void): ColumnDef<
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <CreditStatusBadge status={row.original.status} />,
+    cell: ({ row }) => {
+      const isActive = row.original.status === "Active";
+      return (
+        <Badge 
+          variant={isActive ? "default" : "secondary"}
+          className={
+            isActive 
+              ? "bg-success/10 text-success border-success/20" 
+              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700"
+          }
+        >
+          {row.original.status}
+        </Badge>
+      );
+    },
   },
   {
     id: "actions",

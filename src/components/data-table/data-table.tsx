@@ -20,7 +20,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from '@/components/ui/button';
-import { CreditFilters } from '../credit-filters';
 import { EmptyState } from '../search/empty-state';
 import type { CreditWithMetadata, DashboardStats } from "@/lib/types";
 
@@ -84,14 +83,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <div role="region" aria-label="Carbon credits data table">
-      {allData && stats && (
-        <CreditFilters 
-          credits={allData} 
-          stats={stats}
-          onFilteredResults={handleFilteredResults}
-          onSearchStateChange={handleSearchStateChange}
-        />
-      )}
       <div 
         ref={tableContainerRef} 
         className='rounded-md border h-[600px] overflow-auto'

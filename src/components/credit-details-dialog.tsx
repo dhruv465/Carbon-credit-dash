@@ -44,28 +44,28 @@ export function CreditDetailsDialog({ credit, isOpen, onClose }: CreditDetailsDi
         className="max-w-2xl max-h-[90vh] overflow-y-auto"
         aria-describedby="credit-details-description"
       >
-        <DialogHeader className="space-y-3">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <DialogTitle className="text-xl font-semibold leading-tight text-left">
+        <DialogHeader className="space-y-3 pr-8">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-4">
+              <DialogTitle className="text-xl font-semibold leading-tight text-left flex-1 pr-4">
                 {credit.project_name}
               </DialogTitle>
-              <DialogDescription id="credit-details-description" className="text-sm text-muted-foreground mt-1">
-                Detailed information about this carbon credit including UNIC ID {credit.unic_id}, vintage {credit.vintage}, and current status
-              </DialogDescription>
+              <Badge 
+                variant={isActive ? "default" : "secondary"}
+                className={cn(
+                  "shrink-0 font-medium text-xs px-3 py-1 ml-auto",
+                  isActive 
+                    ? "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800" 
+                    : "bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800/50 dark:text-gray-400 dark:border-gray-700"
+                )}
+                aria-label={`Credit status: ${credit.status}`}
+              >
+                {credit.status}
+              </Badge>
             </div>
-            <Badge 
-              variant={isActive ? "default" : "secondary"}
-              className={cn(
-                "shrink-0 font-medium text-xs px-3 py-1",
-                isActive 
-                  ? "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800" 
-                  : "bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800/50 dark:text-gray-400 dark:border-gray-700"
-              )}
-              aria-label={`Credit status: ${credit.status}`}
-            >
-              {credit.status}
-            </Badge>
+            <DialogDescription id="credit-details-description" className="text-sm text-muted-foreground">
+              Detailed information about this carbon credit including UNIC ID {credit.unic_id}, vintage {credit.vintage}, and current status
+            </DialogDescription>
           </div>
         </DialogHeader>
 

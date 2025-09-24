@@ -159,14 +159,16 @@ const VirtualCreditGrid = React.memo<VirtualCreditGridProps>(({
       {/* Credit Grid */}
       <div 
         className={cn(
-          // Responsive grid layout with optimized spacing
-          "grid gap-4 sm:gap-6",
+          // Responsive grid layout with optimized spacing and consistent heights
+          "grid gap-4 sm:gap-5 lg:gap-6",
           "grid-cols-1",
           "sm:grid-cols-2",
           "lg:grid-cols-3",
           "xl:grid-cols-4",
           "2xl:grid-cols-4 2xl:gap-8",
           "w-full",
+          // Auto-fit grid rows to accommodate fixed height cards
+          "auto-rows-fr",
           "transition-all duration-200 ease-in-out"
         )}
         role="grid"

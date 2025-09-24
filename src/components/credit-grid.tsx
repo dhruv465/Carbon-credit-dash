@@ -67,9 +67,9 @@ const CreditGrid = React.memo<CreditGridProps>(({
       {/* Credit Grid */}
       <div 
         className={cn(
-          // Responsive grid layout with optimized spacing
-          "grid gap-3 sm:gap-4 lg:gap-6",
-          // Mobile: 1 column with full width and better spacing
+          // Responsive grid layout with optimized spacing and consistent heights
+          "grid gap-4 sm:gap-5 lg:gap-6",
+          // Mobile: 1 column with full width
           "grid-cols-1",
           // Small tablet: 2 columns (640px+)
           "sm:grid-cols-2",
@@ -81,6 +81,8 @@ const CreditGrid = React.memo<CreditGridProps>(({
           "2xl:grid-cols-4 2xl:gap-8",
           // Ensure proper alignment and spacing
           "w-full",
+          // Auto-fit grid rows to accommodate fixed height cards
+          "auto-rows-fr",
           // Mobile-specific optimizations
           "px-1 sm:px-0", // Slight padding on mobile for better edge spacing
           // Add subtle animation for grid changes

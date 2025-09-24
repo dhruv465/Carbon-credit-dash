@@ -5,7 +5,7 @@ import { useCredits, useSearch } from "./hooks";
 import { NetworkMonitor } from "./lib/error-handling";
 import { columns } from "./components/data-table/columns";
 import { DataTable } from "./components/data-table/data-table";
-import { Header } from "./components/layout/header";
+
 import { CreditDetailsDialog } from "./components/credit-details-dialog";
 import { Toaster } from "./components/ui/sonner";
 import { Button } from "./components/ui/button";
@@ -21,6 +21,8 @@ import {
 } from "./components/dashboard";
 import { EnhancedErrorBoundary, GlobalErrorHandler } from "./components/error/global-error-handler";
 import { DashboardLoading } from "./components/dashboard/loading-states";
+import { ThemeProvider } from "./components/theme/theme-provider";
+import { Activity, Loader2 } from "lucide-react";
 import { cn } from "./lib/utils";
 
 // Import accessibility checker for development
@@ -90,99 +92,128 @@ function App() {
 
   if (error) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center space-y-4 max-w-md mx-auto">
-            <h2 className="text-xl font-semibold text-destructive">Error Loading Dashboard</h2>
-            <p className="text-muted-foreground">{error}</p>
-            
-            {!isOnline && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm">
-                <p className="text-yellow-800">
-                  You appear to be offline. Please check your internet connection.
-                </p>
+      <ThemeProvider defaultTheme="system" storageKey="eco-offset-theme">
+        <DashboardLayout>
+          <div className="flex items-center justify-center min-h-[500px]">
+            <div className="text-center space-y-6 max-w-lg mx-auto p-8">
+              <div className="space-y-4">
+                <div className="mx-auto w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
+                  <Activity className="h-8 w-8 text-destructive" />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-destructive">Dashboard Error</h2>
+                  <p className="text-muted-foreground">{error}</p>
+                </div>
               </div>
-            )}
-            
-            {retryCount > 0 && (
-              <p className="text-sm text-muted-foreground">
-                Retry attempt: {retryCount}
-              </p>
-            )}
-            
-            <div className="flex gap-2 justify-center">
-              <button 
-                onClick={refetch}
-                disabled={loading}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-smooth hover:shadow-md focus-ring-enhanced disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Retrying...' : 'Try Again'}
-              </button>
               
-              <button 
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 transition-smooth hover:shadow-md focus-ring-enhanced"
-              >
-                Reload Page
-              </button>
+              {!isOnline && (
+                <div className="bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 text-sm">
+                  <p className="text-yellow-800 dark:text-yellow-200">
+                    You appear to be offline. Please check your internet connection.
+                  </p>
+                </div>
+              )}
+              
+              {retryCount > 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Retry attempt: {retryCount}
+                </p>
+              )}
+              
+              <div className="flex gap-3 justify-center">
+                <Button 
+                  onClick={refetch}
+                  disabled={loading}
+                  className="min-w-[120px] cursor-pointer"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Retrying...
+                    </>
+                  ) : (
+                    'Try Again'
+                  )}
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => window.location.reload()}
+                  className="cursor-pointer"
+                >
+                  Reload Page
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </DashboardLayout>
+        </DashboardLayout>
+      </ThemeProvider>
     );
   }
 
   return (
-    <EnhancedErrorBoundary>
-      <GlobalErrorHandler />
-      <div className="min-h-screen bg-background">
-        {/* Skip Links for keyboard navigation */}
-        <div className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:bg-primary focus:text-primary-foreground focus:p-2 focus:rounded">
-          <a href="#main-content" className="mr-4 underline">Skip to main content</a>
-          <a href="#search-section" className="underline">Skip to search</a>
-        </div>
-        
-        <Header />
-        <main role="main" aria-label="Carbon Credits Dashboard" id="main-content">
+    <ThemeProvider defaultTheme="system" storageKey="eco-offset-theme">
+      <EnhancedErrorBoundary>
+        <GlobalErrorHandler />
+        <div className="min-h-screen">
+          {/* Skip Links for keyboard navigation */}
+          <div className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:bg-primary focus:text-primary-foreground focus:p-2 focus:rounded">
+            <a href="#main-content" className="mr-4 underline">Skip to main content</a>
+            <a href="#search-section" className="underline">Skip to search</a>
+          </div>
+          
           <DashboardLayout>
+            {/* Dashboard Header Section */}
+            <DashboardSection>
+              <DashboardHeader stats={stats} loading={loading} />
+            </DashboardSection>
+
+            {/* View Mode Controls */}
             <DashboardSection>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <DashboardHeader stats={stats} loading={loading} />
-                <div className="flex gap-2 animate-fade-in self-start sm:self-auto" role="group" aria-label="View mode selection">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-xl font-semibold">Credit Portfolio</h2>
+                  {!loading && (
+                    <span className="text-sm text-muted-foreground">
+                      {filteredResults.filteredCount} of {filteredResults.totalCount} credits
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex gap-2 animate-fade-in" role="group" aria-label="View mode selection">
                   <Button
                     variant={viewMode === 'cards' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handleViewModeChange('cards')}
                     className={cn(
-                      "h-10 sm:h-9 px-4 text-sm font-medium",
+                      "h-9 px-4 text-sm font-medium",
                       "focus-ring-enhanced transition-smooth hover:shadow-md",
                       "touch-manipulation active:scale-95"
                     )}
                     aria-pressed={viewMode === 'cards'}
                     aria-label="Switch to card view"
                   >
-                    <span className="hidden sm:inline">Card View</span>
-                    <span className="sm:hidden">Cards</span>
+                    Card View
                   </Button>
                   <Button
                     variant={viewMode === 'table' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handleViewModeChange('table')}
                     className={cn(
-                      "h-10 sm:h-9 px-4 text-sm font-medium",
+                      "h-9 px-4 text-sm font-medium",
                       "focus-ring-enhanced transition-smooth hover:shadow-md",
                       "touch-manipulation active:scale-95"
                     )}
                     aria-pressed={viewMode === 'table'}
                     aria-label="Switch to table view"
                   >
-                    <span className="hidden sm:inline">Table View</span>
-                    <span className="sm:hidden">Table</span>
+                    Table View
                   </Button>
                 </div>
               </div>
             </DashboardSection>
             
+            {/* Search and Filters */}
             <DashboardSection>
               {!loading && (
                 <SearchFilters
@@ -194,10 +225,12 @@ function App() {
                   availableVintages={stats.availableVintages}
                   resultCount={filteredResults.filteredCount}
                   totalCount={filteredResults.totalCount}
-                  className="mb-4 sm:mb-6"
                 />
               )}
-              
+            </DashboardSection>
+
+            {/* Main Content */}
+            <DashboardSection>
               {loading ? (
                 <DashboardLoading />
               ) : viewMode === 'cards' ? (
@@ -232,29 +265,29 @@ function App() {
               )}
             </DashboardSection>
           </DashboardLayout>
-        </main>
-        
-        <CreditDetailsDialog 
-          credit={selectedCredit} 
-          isOpen={!!selectedCredit}
-          onClose={handleCloseDetails} 
-        />
-        
-        <CertificateDialog
-          credit={certificateCredit}
-          isOpen={!!certificateCredit}
-          onClose={handleCloseCertificate}
-        />
-        
-        <Toaster />
-        
-        {/* Performance monitoring in development */}
-        <PerformanceMonitor 
-          componentName="App" 
-          enabled={process.env.NODE_ENV === 'development'}
-        />
-      </div>
-    </EnhancedErrorBoundary>
+          
+          <CreditDetailsDialog 
+            credit={selectedCredit} 
+            isOpen={!!selectedCredit}
+            onClose={handleCloseDetails} 
+          />
+          
+          <CertificateDialog
+            credit={certificateCredit}
+            isOpen={!!certificateCredit}
+            onClose={handleCloseCertificate}
+          />
+          
+          <Toaster />
+          
+          {/* Performance monitoring in development */}
+          <PerformanceMonitor 
+            componentName="App" 
+            enabled={process.env.NODE_ENV === 'development'}
+          />
+        </div>
+      </EnhancedErrorBoundary>
+    </ThemeProvider>
   );
 }
 

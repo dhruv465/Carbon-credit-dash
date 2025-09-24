@@ -1,5 +1,11 @@
 import React from "react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Credit } from "@/lib/types";
@@ -12,134 +18,145 @@ interface CreditCardProps {
   className?: string;
 }
 
-const CreditCard = React.memo<CreditCardProps>(({ 
-  credit, 
-  onViewDetails, 
-  onDownloadCertificate, 
-  className 
-}) => {
-  const isActive = credit.status === "Active";
-  
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      onViewDetails?.(credit);
-    }
-  };
-  
-  return (
-    <Card 
-      className={cn(
-        "group relative overflow-hidden cursor-pointer",
-        "border-border/50 hover:border-primary/30 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring",
-        "bg-card/50 hover:bg-card backdrop-blur-sm",
-        "transition-smooth hover-lift animate-fade-in",
-        "hover:shadow-lg hover:shadow-primary/5",
-        // Mobile touch optimizations
-        "touch-manipulation select-none",
-        "active:scale-[0.98] active:shadow-sm",
-        "min-h-[200px] sm:min-h-[180px]", // Ensure consistent height
-        className
-      )}
-      onClick={() => onViewDetails?.(credit)}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      role="article"
-      aria-label={`Carbon credit: ${credit.project_name}, Status: ${credit.status}, Vintage: ${credit.vintage}`}
-      aria-describedby={`credit-${credit.unic_id}-details`}
-    >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-3">
-          <CardTitle 
-            className="text-lg font-semibold leading-tight text-foreground group-hover:text-primary transition-colors-smooth"
-            id={`credit-${credit.unic_id}-title`}
-          >
-            {credit.project_name}
-          </CardTitle>
-          <Badge 
-            variant={isActive ? "default" : "secondary"}
-            className={cn(
-              "shrink-0 font-medium transition-colors-smooth",
-              isActive 
-                ? "bg-success/10 text-success border-success/20 hover:bg-success/15 dark:bg-success/20 dark:text-success dark:border-success/30" 
-                : "bg-muted text-muted-foreground border-border hover:bg-muted/80"
-            )}
-            aria-label={`Credit status: ${credit.status}`}
-          >
-            {credit.status}
-          </Badge>
-        </div>
-      </CardHeader>
+const CreditCard = React.memo<CreditCardProps>(
+  ({ credit, onViewDetails, onDownloadCertificate, className }) => {
+    const isActive = credit.status === "Active";
 
-      <CardContent className="pb-4">
-        <div className="space-y-2" id={`credit-${credit.unic_id}-details`}>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground font-medium">UNIC ID:</span>
-            <span 
-              className="font-mono text-foreground bg-muted/50 px-2 py-1 rounded text-xs"
-              aria-label={`Unique identifier: ${credit.unic_id}`}
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onViewDetails?.(credit);
+      }
+    };
+
+    return (
+      <Card
+        className={cn(
+          "group relative overflow-hidden",
+          "border border-border/40 hover:border-primary/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20",
+          "bg-card hover:bg-card/90 backdrop-blur-sm",
+          "transition-all duration-200 ease-out",
+          "hover:shadow-lg hover:shadow-primary/8 hover:-translate-y-0.5",
+          // Mobile touch optimizations
+          "touch-manipulation select-none",
+          "active:scale-[0.98]",
+          // Better height management - min height with flexible growth
+          "min-h-[260px] flex flex-col",
+          // Explicit cursor pointer
+          "cursor-pointer",
+          // Modern rounded corners
+          "rounded-lg",
+          className
+        )}
+        onClick={() => onViewDetails?.(credit)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="article"
+        aria-label={`Carbon credit: ${credit.project_name}, Status: ${credit.status}, Vintage: ${credit.vintage}`}
+        aria-describedby={`credit-${credit.unic_id}-details`}
+        style={{ cursor: "pointer" }}
+      >
+        {/* Clean header with proper spacing */}
+        <CardHeader className="p-4 pb-2 flex-shrink-0">
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle
+              className="text-sm font-semibold leading-tight text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2 flex-1 pr-2"
+              id={`credit-${credit.unic_id}-title`}
+              title={credit.project_name}
             >
-              {credit.unic_id}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground font-medium">Vintage:</span>
-            <span 
-              className="font-semibold text-foreground"
-              aria-label={`Vintage year: ${credit.vintage}`}
+              {credit.project_name}
+            </CardTitle>
+            <Badge
+              variant={isActive ? "default" : "secondary"}
+              className={cn(
+                "shrink-0 font-medium text-xs px-2 py-0.5 rounded-full",
+                isActive
+                  ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-700"
+                  : "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600"
+              )}
+              aria-label={`Credit status: ${credit.status}`}
             >
-              {credit.vintage}
-            </span>
+              {credit.status}
+            </Badge>
           </div>
-        </div>
-      </CardContent>
+        </CardHeader>
 
-      <CardFooter className="pt-0 gap-2 flex-col sm:flex-row">
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(
-            "w-full sm:flex-1 text-xs sm:text-sm font-medium",
-            "h-10 sm:h-8", // Larger touch targets on mobile
-            "focus-ring-enhanced transition-smooth hover:border-primary/50 hover:text-primary",
-            "touch-manipulation active:scale-95"
-          )}
-          onClick={(e: React.MouseEvent) => {
-            e.stopPropagation();
-            onViewDetails?.(credit);
-          }}
-          aria-label={`View details for ${credit.project_name}`}
-          aria-describedby={`credit-${credit.unic_id}-title`}
-        >
-          View Details
-        </Button>
-        <Button
-          variant="default"
-          size="sm"
-          className={cn(
-            "w-full sm:flex-1 text-xs sm:text-sm font-medium",
-            "h-10 sm:h-8", // Larger touch targets on mobile
-            "focus-ring-enhanced transition-smooth hover:bg-primary/90 hover:shadow-md",
-            "touch-manipulation active:scale-95"
-          )}
-          onClick={(e: React.MouseEvent) => {
-            e.stopPropagation();
-            onDownloadCertificate?.(credit);
-          }}
-          aria-label={`Download retirement certificate for ${credit.project_name}`}
-          aria-describedby={`credit-${credit.unic_id}-title`}
-        >
-          <span className="hidden sm:inline">Download Certificate</span>
-          <span className="sm:hidden">Download</span>
-        </Button>
-      </CardFooter>
+        {/* Content with clean spacing */}
+        <CardContent className="px-4 pb-2 flex-1 flex flex-col justify-center">
+          <div className="space-y-2.5" id={`credit-${credit.unic_id}-details`}>
+            <div className="flex items-center justify-between py-2 px-3 bg-muted/30 rounded-md">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                UNIC ID
+              </span>
+              <span
+                className="font-mono text-xs text-foreground font-medium max-w-[100px] truncate"
+                aria-label={`Unique identifier: ${credit.unic_id}`}
+                title={credit.unic_id}
+              >
+                {credit.unic_id.split("-").pop() || credit.unic_id}
+              </span>
+            </div>
+            <div className="flex items-center justify-between py-2 px-3 bg-muted/30 rounded-md">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Vintage
+              </span>
+              <span
+                className="text-sm font-bold text-foreground"
+                aria-label={`Vintage year: ${credit.vintage}`}
+              >
+                {credit.vintage}
+              </span>
+            </div>
+          </div>
+        </CardContent>
 
-      {/* Enhanced gradient overlay with environmental theme */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-success/10 opacity-0 group-hover:opacity-100 transition-smooth pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-primary/5 opacity-0 group-focus-within:opacity-100 transition-smooth pointer-events-none" />
-    </Card>
-  );
-});
+        {/* Clean footer with horizontal buttons - guaranteed to be visible */}
+        <CardFooter className="p-4 pt-3 flex-shrink-0 mt-auto">
+          <div className="flex gap-2 w-full">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "flex-1 text-xs font-medium",
+                "h-9 px-3",
+                "hover:bg-muted/50 hover:text-foreground",
+                "transition-colors duration-200",
+                "cursor-pointer rounded-md"
+              )}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                onViewDetails?.(credit);
+              }}
+              aria-label={`View details for ${credit.project_name}`}
+              style={{ cursor: "pointer" }}
+            >
+              Details
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              className={cn(
+                "flex-1 text-xs font-medium",
+                "h-9 px-3",
+                "bg-primary hover:bg-primary/90 text-primary-foreground",
+                "transition-colors duration-200",
+                "cursor-pointer rounded-md"
+              )}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                onDownloadCertificate?.(credit);
+              }}
+              aria-label={`Download retirement certificate for ${credit.project_name}`}
+              style={{ cursor: "pointer" }}
+            >
+              Certificate
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+    );
+  }
+);
 
 CreditCard.displayName = "CreditCard";
 

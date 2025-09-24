@@ -8,7 +8,7 @@
  * @param priority - The priority level (polite or assertive)
  */
 export function announceToScreenReader(
-  message: string, 
+  message: string,
   priority: 'polite' | 'assertive' = 'polite'
 ): void {
   const announcement = document.createElement('div');
@@ -16,9 +16,9 @@ export function announceToScreenReader(
   announcement.setAttribute('aria-atomic', 'true');
   announcement.className = 'sr-only';
   announcement.textContent = message;
-  
+
   document.body.appendChild(announcement);
-  
+
   // Remove the announcement after a short delay
   setTimeout(() => {
     document.body.removeChild(announcement);
@@ -38,16 +38,16 @@ export class FocusManager {
    */
   trapFocus(container: Element): void {
     this.previousActiveElement = document.activeElement;
-    
+
     // Get all focusable elements within the container
     this.focusableElements = container.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
-    
+
     if (this.focusableElements.length > 0) {
       (this.focusableElements[0] as HTMLElement).focus();
     }
-    
+
     // Add event listener for tab key
     document.addEventListener('keydown', this.handleTabKey);
   }
@@ -57,11 +57,11 @@ export class FocusManager {
    */
   releaseFocus(): void {
     document.removeEventListener('keydown', this.handleTabKey);
-    
+
     if (this.previousActiveElement) {
       (this.previousActiveElement as HTMLElement).focus();
     }
-    
+
     this.previousActiveElement = null;
     this.focusableElements = null;
   }
@@ -99,7 +99,7 @@ export async function checkColorContrast(element: Element): Promise<boolean> {
   const styles = window.getComputedStyle(element);
   const backgroundColor = styles.backgroundColor;
   const color = styles.color;
-  
+
   // This is a simplified check - in a real implementation, you'd use a proper
   // color contrast calculation library
   return backgroundColor !== color;
@@ -115,7 +115,7 @@ export function addSkipLinks(): void {
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <a href="#search" class="skip-link">Skip to search</a>
   `;
-  
+
   document.body.insertBefore(skipLinks, document.body.firstChild);
 }
 
@@ -128,22 +128,22 @@ export function validateAccessibleLabels(container: Element = document.body): El
   const interactiveElements = container.querySelectorAll(
     'button, [role="button"], input, select, textarea, a[href]'
   );
-  
+
   const elementsWithoutLabels: Element[] = [];
-  
+
   interactiveElements.forEach(element => {
     const hasAriaLabel = element.hasAttribute('aria-label');
     const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
     const hasTitle = element.hasAttribute('title');
     const hasTextContent = element.textContent?.trim();
-    const hasLabel = element.tagName === 'INPUT' && 
+    const hasLabel = element.tagName === 'INPUT' &&
       document.querySelector(`label[for="${element.id}"]`);
-    
+
     if (!hasAriaLabel && !hasAriaLabelledBy && !hasTitle && !hasTextContent && !hasLabel) {
       elementsWithoutLabels.push(element);
     }
   });
-  
+
   return elementsWithoutLabels;
 }
 
@@ -156,20 +156,20 @@ export function validateHeadingHierarchy(container: Element = document.body): st
   const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
   const issues: string[] = [];
   let previousLevel = 0;
-  
+
   headings.forEach((heading, index) => {
     const level = parseInt(heading.tagName.charAt(1));
-    
+
     if (index === 0 && level !== 1) {
       issues.push('First heading should be h1');
     }
-    
+
     if (level > previousLevel + 1) {
       issues.push(`Heading level jumps from h${previousLevel} to h${level}`);
     }
-    
+
     previousLevel = level;
   });
-  
+
   return issues;
 }
